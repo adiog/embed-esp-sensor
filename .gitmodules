@@ -1,0 +1,15 @@
+[submodule "esp/sdk"]
+	path = esp/sdk
+	url = https://github.com/adiog/embed-esp-sdk
+[submodule "esp/std"]
+	path = esp/std
+	url = https://github.com/adiog/embed-esp-std
+[submodule "esp/esptool"]
+	path = esp/esptool
+	url = https://github.com/adiog/embed-esp-esptool
+[submodule "esp/firmware"]
+	path = esp/firmware
+	url = https://github.com/adiog/embed-esp-firmware
+[submodule "esp/filesystem"]
+	path = esp/filesystem
+	url = https://github.com/adiog/embed-esp-filesystem
