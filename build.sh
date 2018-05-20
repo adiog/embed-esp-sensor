@@ -3,7 +3,7 @@
 cd $(dirname $0)
 
 set -e
-#set -o xtrace # uncomment for verbose bash
+set -o xtrace # uncomment for verbose bash
 
 PROJECT_NAME=esp-project
 
@@ -41,6 +41,8 @@ export AR=xtensa-lx106-elf-ar
 export ESP_SIZE=xtensa-lx106-elf-size
 export ESP_TOOL=esptool
 
+INCLUDE_DIR="-I./${PROJECT_NAME}"
+
 ASM_FLAGS="                                               \
     -D__ets__                                             \
     -DICACHE_FLASH                                        \
@@ -63,7 +65,8 @@ ASM_FLAGS="                                               \
     -DARDUINO_BOARD=\"ESP8266_NODEMCU\"                   \
     -DESP8266                                             \
     -I${ESP_CORE_PATH}                                    \
-    -I${ESP_VARIANT_PATH}"
+    -I${ESP_VARIANT_PATH}                                 \
+    ${INCLUDE_DIR}"
 
 C_CORE_FLAGS="                                            \
     -D__ets__                                             \
@@ -98,7 +101,8 @@ C_CORE_FLAGS="                                            \
     -DARDUINO_BOARD=\"ESP8266_NODEMCU\"                   \
     -DESP8266                                             \
     -I${ESP_CORE_PATH}                                    \
-    -I${ESP_VARIANT_PATH}"
+    -I${ESP_VARIANT_PATH}                                 \
+    ${INCLUDE_DIR}"
 
 CXX_CORE_FLAGS="                                          \
     -D__ets__                                             \
@@ -130,7 +134,8 @@ CXX_CORE_FLAGS="                                          \
     -DARDUINO_BOARD=\"ESP8266_NODEMCU\"                   \
     -DESP8266                                             \
     -I${ESP_CORE_PATH}                                    \
-    -I${ESP_VARIANT_PATH}"
+    -I${ESP_VARIANT_PATH}                                 \
+    ${INCLUDE_DIR}"
 
 LD_FLAGS_PREFIX="                                         \
     -g                                                    \
@@ -301,7 +306,9 @@ AUTODETECT_OBJECTS=""
 for source in ${AUTODETECT_SOURCES};
 do
   OBJ=${BUILD_DIR}/$(basename ${source}).o
-  ${CXX} ${CXX_CORE_FLAGS} ${source} -o ${OBJ}
+  [[ ${source} =~ .*\.cpp ]] \
+      && ${CXX} ${CXX_CORE_FLAGS} ${source} -o ${OBJ} \
+      || ${CC} ${C_CORE_FLAGS} ${source} -o ${OBJ}
   AUTODETECT_OBJECTS="${AUTODETECT_OBJECTS} ${OBJ}"
 done
 
