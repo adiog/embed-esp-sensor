@@ -1,42 +1,52 @@
-/*
-  Blink
+#include "Arduino.h"
+#include "WiFiUdp.h"
+#include <WiFiClient.h>
+#include <ESP8266WiFi.h>
 
-  Turns an LED on for one second, then off for one second, repeatedly.
 
-  Most Arduinos have an on-board LED you can control. On the UNO, MEGA and ZERO
-  it is attached to digital pin 13, on MKR1000 on pin 6. LED_BUILTIN is set to
-  the correct LED pin independent of which board is used.
-  If you want to know what pin the on-board LED is connected to on your Arduino
-  model, check the Technical Specs of your board at:
-  https://www.arduino.cc/en/Main/Products
+WiFiUDP udp;
 
-  modified 8 May 2014
-  by Scott Fitzgerald
-  modified 2 Sep 2016
-  by Arturo Guadalupi
-  modified 8 Sep 2016
-  by Colby Newman
+const char* ssid = "ssid";
+const char* password = "pass";
 
-  This example code is in the public domain.
+char host[16] = "192.168.0.101";
+const int port = 1234;
 
-  http://www.arduino.cc/en/Tutorial/Blink
-*/
+const char * message = "hello world\n";
+const int messageSize = 12;
 
-#include <Arduino.h>
+const int messageInterval = 1000;
 
-#define ESP_LED 2
+void setup(void)
+{
+    Serial.begin(115200);
+    Serial.println("Connecting to Wifi..");
 
-// the setup function runs once when you press reset or power the board
-void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(ESP_LED, OUTPUT);
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password);
+
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(500);
+        Serial.print(".");
+    }
+
+    Serial.println(".. WiFi connected.");
+    Serial.println("");
+
+    Serial.print("Connected to: ");
+    Serial.println(ssid);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+    Serial.println("");
 }
 
-// the loop function runs over and over again forever
-void loop() {
-  digitalWrite(ESP_LED, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
-  digitalWrite(ESP_LED, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);                       // wait for a second
+void loop()
+{
+    udp.beginPacket(host, port);
+    udp.write(message, messageSize);
+    udp.endPacket();
+
+    delay(messageInterval);
 }
 
