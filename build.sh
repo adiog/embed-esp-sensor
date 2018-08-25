@@ -150,7 +150,7 @@ LD_FLAGS_PREFIX="                                         \
     -L${ESP_TOOLS_SDK_PATH}/lib                           \
     -L${ESP_TOOLS_SDK_PATH}/ld                            \
     -L${ESP_TOOLS_SDK_PATH}/libc/xtensa-lx106-elf/lib     \
-    -Teagle.flash.4m1m.ld                                 \
+    -T${ESP_TOOLS_SDK_PATH}/ld/eagle.flash.4m1m.ld                                 \
     -Wl,--gc-sections                                     \
     -Wl,-wrap,system_restart_local                        \
     -Wl,-wrap,spi_flash_read"
@@ -171,7 +171,6 @@ LD_FLAGS_END_GROUP="                                      \
     -lespnow                                              \
     -lsmartconfig                                         \
     -lairkiss                                             \
-    -lmesh                                                \
     -lwpa2                                                \
     -lstdc++                                              \
     -lm                                                   \
@@ -201,11 +200,13 @@ function build_esp_core_library() {
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/core_esp8266_si2c.c -o ${BUILD_DIR}/core/core_esp8266_si2c.c.o
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/core_esp8266_timer.c -o ${BUILD_DIR}/core/core_esp8266_timer.c.o
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/core_esp8266_wiring.c -o ${BUILD_DIR}/core/core_esp8266_wiring.c.o
+  ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/core_esp8266_waveform.c -o ${BUILD_DIR}/core/core_esp8266_waveform.c.o
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/core_esp8266_wiring_analog.c -o ${BUILD_DIR}/core/core_esp8266_wiring_analog.c.o
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/core_esp8266_wiring_digital.c -o ${BUILD_DIR}/core/core_esp8266_wiring_digital.c.o
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/core_esp8266_wiring_pulse.c -o ${BUILD_DIR}/core/core_esp8266_wiring_pulse.c.o
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/core_esp8266_wiring_pwm.c -o ${BUILD_DIR}/core/core_esp8266_wiring_pwm.c.o
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/core_esp8266_wiring_shift.c -o ${BUILD_DIR}/core/core_esp8266_wiring_shift.c.o
+  ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/gdb_hooks.c -o ${BUILD_DIR}/core/gdb_hooks.c.o
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/heap.c -o ${BUILD_DIR}/core/heap.c.o
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/libc_replacements.c -o ${BUILD_DIR}/core/libc_replacements.c.o
   ${CC} ${C_CORE_FLAGS} ${ESP_CORE_PATH}/sntp-lwip2.c -o ${BUILD_DIR}/core/sntp-lwip2.c.o
@@ -253,12 +254,14 @@ function build_esp_core_library() {
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/core_esp8266_postmortem.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/core_esp8266_si2c.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/core_esp8266_timer.c.o
+  ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/core_esp8266_waveform.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/core_esp8266_wiring.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/core_esp8266_wiring_analog.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/core_esp8266_wiring_digital.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/core_esp8266_wiring_pulse.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/core_esp8266_wiring_pwm.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/core_esp8266_wiring_shift.c.o
+  ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/gdb_hooks.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/heap.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/libc_replacements.c.o
   ${AR} cru ${ESP_CORE} ${BUILD_DIR}/core/sntp-lwip2.c.o
